@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Devoluciones</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+        <!-- font awesome usado para iconos svg -->
+        <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}"/>
+        <script src="https://kit.fontawesome.com/e504a05327.js" crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+
+        <div class="container-fluid">
+
+            <header class="bg-danger text-white">
+                <div class="row align-items-center">
+
+                    <div class="col-1">
+                        <div class="text-center">
+                            <a class="text-light text-decoration-none" th:href="@{/}"><i class="fa-solid fa-house-user"></i> Inicio</a>
+                        </div>
+                    </div>
+                    <div class="col-10">
+                        <div class="text-end">
+                            <h2 class="Ventas L y M">Salsamentaria L & M</h2>
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <img src="/img/logo.png" width="80" alt="auto" class="img-fluid" />
+                    </div>
+                </div>
+
+            </header>
+
+            <!--configuracion-->
+
+
+
+
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <div class="mt-5 card text-center">
+                        <div class="card-header">
+                            <h2>Gestión de devoluciones</h2>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Devolución por factura</h5>
+                            <hr />
+                            <div class="align-items-center">
+
+                                <div class="row justify-content-center">
+                                    <div class="col-6">
+                                        <i class="fa-solid fa-cart-arrow-down fa-5x"></i>
+                                        <div class="w-100"></div>
+                                        <div class="w-100"></div>
+                                        <button type="button" class="mt-2 btn btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#modalDevolucion">Devolución</button>
+
+                                    </div>
+                                </div>
+
+                                <!-- <a href="#" class="btn btn-primary">Guardar</a> -->
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <p class="text-dark"><b>Verifique la información antes de guardar.</b></p>
+                        </div>
+
+                    </div>
+                    <div th:if="${param.exito1}" class="mt-2 alert alert-success d-flex" role="alert">
+                        <div class="text-center">
+                           <p> <i class="fa-solid fa-circle-check"></i> La devolución se ha efectuado correctamente.
+                               <a class="link-success p-2" th:href="@{/ventaPdf/(codigo=${param.idInvoice})}" th:target="_blank">Ver factura</a>
+                               <a class="link-success p-2" href="#" id="printInvoice">Imprimir factura</a>
+                           </p>
+                        </div>
+                    </div>
+                    <div th:if="${param.exito2}" class="mt-2 alert alert-success d-flex" role="alert">
+                        <div class="text-center">
+                            <p> <i class="fa-solid fa-circle-check"></i> La devolución se ha efectuado correctamente. Se elimino la factura con el código: <span th:text="${param.idInvoice}"></span> </p>
+                        </div>
+                    </div>
+                    <div th:if="${param.error1}" class="mt-2 alert alert-danger d-flex" role="alert">
+                        <div class="text-center">
+                            <i class="fa-solid fa-xmark"></i>
+                            Error. La factura digitada no existe.
+                        </div>
+                    </div>
+                    <div th:if="${param.error2}" class="mt-2 alert alert-danger d-flex" role="alert">
+                        <div class="text-center">
+                            <i class="fa-solid fa-xmark"></i>
+                            Error. El producto en la factura no existe.
+                        </div>
+                    </div>
+                    <div th:if="${param.error3}" class="mt-2 alert alert-danger d-flex" role="alert">
+                        <div class="text-center">
+                            <i class="fa-solid fa-xmark"></i>
+                            Error. La cantidad del producto no coincide con su unidad de medida (si es un producto por unidad la cantidad no debe tener decimales).
+                        </div>
+                    </div>
+                    <div th:if="${param.error4}" class="mt-2 alert alert-danger d-flex" role="alert">
+                        <div class="text-center">
+                            <i class="fa-solid fa-xmark"></i>
+                            Error. La cantidad de devolucion no puede ser mayor a la registrada en la factura.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-12 text-center">
+
+                </div>
+
+                <footer class="row position-absolute bottom-0 start-50 translate-middle-x bg-danger">
+                    <div class="row align-items-center">
+                        <div class="col-12 text-center text-white">
+                            <p>Sistema de ventas Lympus &COPY;</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <!-- Modal devolucion -->
+        <div sec:authorize="hasRole('ROLE_ADMIN')" class="modal fade" id="modalDevolucion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titulo-modal">Devolución de productos</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- formulario -->
+                        <form method="POST" th:action="@{/invoiceReturn}" class="row g-3 was-validated" th:object="${invoiceReturn}">
+                            <div class="col-md-12">
+                                <label for="idInvoice" class="form-label">Código de factura:</label>
+                                <input type="number" class="form-control" name="idInvoice" min="1" max="999999999999999999" required/>
+                                <div class="invalid-feedback">
+                                    Digita el codigo de la factura.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="idItem" class="form-label">Código de producto:</label>
+                                <input type="number" class="form-control" name="idItem" min="1" max="999999999999999999" required/>
+                                <div class="invalid-feedback">
+                                    Digita el codigo del producto.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantity" class="form-label">Cantidad de producto:</label>
+                                <input class="form-control" type="text" inputmode="numeric" min="0.1" name="quantity" required pattern="\d+(\.\d{1,2})?"/>
+                                <div class="invalid-feedback">
+                                    Unidad sin decimales (min 1) - Kilo max 2 decimales (min 0.1)
+                                </div>
+                            </div>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <!-- js de bootstrap -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <!-- js personalizado -->
+        <script th:src="@{/js/devoluciones.js}"></script>
+    </body>
+</html>

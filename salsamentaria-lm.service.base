@@ -1,0 +1,13 @@
+[Unit]
+Description=sistema de ventas lympus
+After=syslog.target, db_lympus.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=2
+ExecStart=
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

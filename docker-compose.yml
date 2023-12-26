@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  lympus_ss:
+    image: lympus_ss
+    container_name: lympus_ss
+    build:
+      context: .
+    environment:
+      - 'SPRING_DATASOURCE_HOST=localhost'
+      - 'SPRING_DATASOURCE_USERNAME=postgres'
+      - 'SPRING_DATASOURCE_PASS=postgres'
+    ports:
+      - "8080:8080"
